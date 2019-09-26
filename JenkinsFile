@@ -1,0 +1,78 @@
+#!groovy
+import hudson.tasks.test.AbstractTestResultAction
+import hudson.model.*
+
+def sendStatusToGit(status,description){
+  /*def response = httpRequest consoleLogResponseBody: true,acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON', httpMode: "POST", requestBody: "{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\"}",url: "https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
+  echo "${response}.getContent()"
+  return response.geStatus() */
+  sh "curl -H 'Content-Type:application/json' -X POST -d '{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\",\"target_url\":\"${BUILD_URL}\"}' https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
+}
+
+pipeline{
+	  parameters {
+		  choice(name:'CONCORD_SLAVE', choices: ['concord-reno-devvm', 'concord-reno-prodvm'], description: '')
+			string(name:'BRANCH', defaultValue: 'master', description: '')
+		}
+		agent {
+			node {label "${CONCORD_SLAVE}"}
+		}
+		environment {
+			NODE_ENV = "${CONCORD_SLAVE == "concord-reno-prodvm" ? 'prod': 'dev'}"
+      ORG_NAME = "Adi-org"
+      REPO_NAME = "test"
+		}
+		stages{
+      stage("get git credentials"){
+        steps{
+           script{
+             def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+             com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
+             jenkins.model.Jenkins.instance
+             )
+             def c = creds.findResult { it.id == 'concord-service-boat' ? it : null }
+             username = "${c.username}"
+             password = "${c.password}"
+           }
+        }
+        }
+  			stage("Setup"){
+						steps{
+							script{
+                /*echo "${GITHUB_PR_HEAD_SHA}"
+                echo "${BUILD_URL}"
+                echo "${GIT_COMMIT}"
+                echo " ${GIT_BRANCH}"
+                echo " ${GIT_LOCAL_BRANCH}"
+                echo "${env.BRANCH_NAME}"
+                echo "${env.CHANGE_BRANCH}"
+                echo "${env.CHANGE_TARGET}"
+                echo env.ghprbTargetBranch*/
+                final scmVars = checkout(scm)
+                echo "scmVars: ${scmVars}"
+								sh "git checkout ${BRANCH}"
+							}
+						}
+						post{
+							success{
+                //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is successfull!",state:"SUCCESS")
+                //sendStatusToGit('success','The build is successful!')
+                /*script{
+                  sendStatusToGit('success','The build is successful!')
+                  //echo "Response from the github for the status is ${response}"
+                }*/
+                echo "SUCCESS: test build"
+							}
+
+							failure{
+                //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
+                /*script{
+                  sendStatusToGit('failure','The build is failed!')
+                  //echo "Response from the github for the status is ${response}"
+                }*/
+                echo "FAILURE: test build."
+							}
+						}
+					}
+		}
+}
