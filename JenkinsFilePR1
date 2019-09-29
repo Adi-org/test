@@ -3,6 +3,17 @@ import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.*
 //import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+
+def sendStatusToGit(status,description){
+  /*def response = httpRequest consoleLogResponseBody: true,acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON', httpMode: "POST", requestBody: "{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\"}",url: "https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
+  echo "${response}.getContent()"
+  return response.geStatus() */
+  sh "curl -H 'Content-Type:application/json' -X POST -d '{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\",\"target_url\":\"${BUILD_URL}\"}' https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
+}
+
+pipeline{
+	  parameters {
+		  choice(name:'CONCORD_SLAVE', choices: ['concord-reno-devvm', 'concord-reno-prodvm'], description: '')
 			string(name:'BRANCH', defaultValue: 'master', description: '')
 		}
 		agent {
