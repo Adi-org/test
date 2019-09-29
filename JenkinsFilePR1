@@ -72,6 +72,7 @@ pipeline{
                   
                   //sh "git checkout ${BRANCH}" 
                 }
+                
                 catch(Exception e){
                   //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
                   echo "Get Credentials block failed with :"
