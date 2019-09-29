@@ -2,7 +2,7 @@
 import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.*
 //import groovy.json.JsonOutput
-import groovy.json.JsonSlurper>', 'concord-reno-prodvm'], description: '')
+import groovy.json.JsonSlurper
 			string(name:'BRANCH', defaultValue: 'master', description: '')
 		}
 		agent {
