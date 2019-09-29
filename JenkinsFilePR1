@@ -57,7 +57,7 @@ pipeline{
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()
-                  echo " printing commit det cmd output branch 3 ${json}" 
+                  echo " printing commit det cmd output branch 3 ${json.items}" 
                   /*echo "${GITHUB_PR_HEAD_SHA}"
                   echo "${BUILD_URL}"
                   echo "${GIT_COMMIT}"
