@@ -1,7 +1,7 @@
 #!groovy
 import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.*
-//import groovy.json.JsonOutput
+import groovy.json.JsonOutput
 
 def sendStatusToGit(status,description){
   /*def response = httpRequest consoleLogResponseBody: true,acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON', httpMode: "POST", requestBody: "{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\"}",url: "https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
@@ -52,7 +52,9 @@ pipeline{
                 try{
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
-                  echo " printing commit det cmd output branch 3 ${commitPRDetails}" 
+                  def json = JsonOutput.toJson(commitPRDetails)
+
+                  echo " printing commit det cmd output branch 3 ${json}['items']" 
                   /*echo "${GITHUB_PR_HEAD_SHA}"
                   echo "${BUILD_URL}"
                   echo "${GIT_COMMIT}"
