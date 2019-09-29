@@ -53,7 +53,7 @@ pipeline{
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
                   def json = JsonOutput.toJson(commitPRDetails)
-                  def type = commitPRDetails.getClass()
+                  def type = json.getClass()
                   echo " printing commit det cmd output branch 3 ${type}" 
                   /*echo "${GITHUB_PR_HEAD_SHA}"
                   echo "${BUILD_URL}"
