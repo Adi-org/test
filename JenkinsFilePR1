@@ -94,7 +94,7 @@ pipeline{
                   /*if(json.items[0].labels.isEmpty()){
                     echo "Labels is empty."
                   }*/
-                  echo " printing commit details cmd output branch 4 ${json.items}" 
+                  //echo " printing commit details cmd output branch 4 ${json.items}" 
                   /*echo "${GITHUB_PR_HEAD_SHA}"
                   echo "${BUILD_URL}"
                   echo "${GIT_COMMIT}"
