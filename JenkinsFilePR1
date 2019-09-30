@@ -68,12 +68,12 @@ pipeline{
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()*/
                   //def list = sh (script : "ls -l",returnStdout: true).trim()
-                  sh "git clone https://${password}@github.com/Adi-org/test.git"
+                  //sh "git clone https://${password}@github.com/Adi-org/test.git"
                   echo "heree  ..."
-                  if(!json.items.isEmpty()){
-                    //sh "git clone https://${password}@github.com/Adi-org/test.git"
+                  if(!json['items']isEmpty()){
+                    sh "git clone https://${password}@github.com/Adi-org/test.git"
                     echo "Here0 ${password}"
-                    "ls -l".execute()
+                    //"ls -l".execute()
                     //def clone =  sh (script:"git clone https://${password}@github.com/Adi-org/test.git",returnStdout: true)
                     echo "Here01"
                     dir("test"){
