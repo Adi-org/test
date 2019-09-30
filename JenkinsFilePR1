@@ -61,8 +61,8 @@ pipeline{
                 try{    
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
-                   def json = readJSON text:commitPRDetails
-                   echo " Itemss  ${json['items']}"
+                  def commitPRDetailsJson = readJSON text:commitPRDetails
+                  echo " Itemss  ${commitPRDetailsJson['items']}"
                   /*def parser = new JsonSlurper()
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
@@ -70,7 +70,7 @@ pipeline{
                   //def list = sh (script : "ls -l",returnStdout: true).trim()
                   //sh "git clone https://${password}@github.com/Adi-org/test.git"
                   echo "heree  ..."
-                  if(!json['items'].isEmpty()){
+                  if(!commitPRDetailsJson['items'].isEmpty()){
                     sh "git clone https://${password}@github.com/Adi-org/test.git"
                     echo "Here0 ${password}"
                     //"ls -l".execute()
@@ -80,8 +80,10 @@ pipeline{
                         echo "Here1"
                         sh "git checkout ${BRANCH}"
                         echo "Here2"
-                        def prBranch = json.items[0].title
-                        echo "Here3"
+                        def branchDetails = sh (script : "curl -H 'Content-Type:application/json' -H 'Accept:application/vnd.github.groot-preview+json' -X GET  https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/commits/${GIT_COMMIT}/branches-where-head",returnStdout: true).trim()
+                        def branchDetailsJson = readJSON text:branchDetails
+                        def prBranch = branchDetailsJson[0]['name']
+                        echo "Here3 ${prBranch}"
                         sh "git merge ${prBranch}"
                     }
                     
