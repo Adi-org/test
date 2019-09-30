@@ -58,7 +58,7 @@ pipeline{
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()
                   if(json.items.isEmpty()){
-                    echo "Its empty"
+                    echo "Its empty."
                   }
                   echo " printing commit details cmd output branch 3 ${json.items}" 
                   /*echo "${GITHUB_PR_HEAD_SHA}"
