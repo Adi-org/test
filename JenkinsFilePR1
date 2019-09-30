@@ -70,7 +70,7 @@ pipeline{
                   //def list = sh (script : "ls -l",returnStdout: true).trim()
                   //sh "git clone https://${password}@github.com/Adi-org/test.git"
                   echo "heree  ..."
-                  if(!json['items']isEmpty()){
+                  if(!json['items'].isEmpty()){
                     sh "git clone https://${password}@github.com/Adi-org/test.git"
                     echo "Here0 ${password}"
                     //"ls -l".execute()
