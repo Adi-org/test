@@ -61,7 +61,8 @@ pipeline{
                 try{    
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
-                  
+                   def json = readJSON text:commitPRDetails
+                   echo "${json['items']}"
                   /*def parser = new JsonSlurper()
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
