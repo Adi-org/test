@@ -57,7 +57,7 @@ pipeline{
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()
-                  if(json.items..isEmpty()){
+                  if(json.items.isEmpty()){
                     echo "Its empty"
                   }
                   echo " printing commit details cmd output branch 3 ${json.items}" 
