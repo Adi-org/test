@@ -61,13 +61,14 @@ pipeline{
                 try{    
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
-                  sh "git clone https://${password}@github.com/Adi-org/test.git"
+                  
                   def parser = new JsonSlurper()
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()
                 
                   if(!json.items.isEmpty()){
+                    sh "git clone https://${password}@github.com/Adi-org/test.git"
                     echo "Here0 ${password}"
                     "ls -l".execute()
                     //def clone =  sh (script:"git clone https://${password}@github.com/Adi-org/test.git",returnStdout: true)
