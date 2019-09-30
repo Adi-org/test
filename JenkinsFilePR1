@@ -46,12 +46,14 @@ pipeline{
            }
         }
         }
-        
+        stage("Cleanup"){
+            // delete a dir if exists
+            sh "rm -rf test"
+        }
   			stage("Setup"){
 						steps{
 							script{
-                try{
-    
+                try{    
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
                   sh "git clone https://${password}@github.com/Adi-org/test.git"
