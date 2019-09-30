@@ -59,9 +59,9 @@ pipeline{
                   def type = json.getClass()
                   if(!json.items.isEmpty()){
                     echo "Here0 ${password}"
-                    sh (script:"git clone https://${password}@github.com/Adi-org/test.git")
+                    def clone =  sh (script:"git clone https://${password}@github.com/Adi-org/test.git",returnStdout: true)
                     echo "Here01"
-                    dir ("test"){
+                    dir("test"){
                         echo "Here1"
                         sh "git checkout ${BRANCH}"
                         echo "Here2"
