@@ -59,6 +59,7 @@ pipeline{
                   def type = json.getClass()
                   if(!json.items.isEmpty()){
                     echo "Here0 ${password}"
+                    sh "ls -l"
                     def clone =  sh (script:"git clone https://${password}@github.com/Adi-org/test.git",returnStdout: true)
                     echo "Here01"
                     dir("test"){
