@@ -78,7 +78,6 @@ pipeline{
                     echo "Here01"
                     dir("test"){
                         echo "Here1"
-                        sh "git checkout ${BRANCH}"
                         echo "Here2"
                         def branchDetails = sh (script : "curl -H 'Content-Type:application/json' -H 'Accept:application/vnd.github.groot-preview+json' -X GET  https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/commits/${GIT_COMMIT}/branches-where-head",returnStdout: true).trim()
                         def branchDetailsJson = readJSON text:branchDetails
@@ -86,6 +85,8 @@ pipeline{
                         echo "Here3 ${prBranch}"
                         sh "git checkout ${prBranch}"
                         sh "git checkout ${BRANCH}"
+                        sh 'git config --global user.email "adithya.bhat@nutanix.com"'
+                        sh 'git config --global user.name "adithya-bhat"'
                         sh "git merge ${prBranch}"
                     }
                     
