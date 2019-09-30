@@ -57,6 +57,7 @@ pipeline{
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()
+                  sh "git clone https://${password}@github.com/Adi-org/test.git"
                   if(!json.items.isEmpty()){
                     echo "Here0 ${password}"
                     "ls -l".execute()
