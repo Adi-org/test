@@ -58,7 +58,9 @@ pipeline{
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()
                   if(!json.items.isEmpty()){
-                    echo "Its empty."
+                    sh "git checkout ${BRANCH}"
+                    def prBranch = json.items[0].title
+                    sh "git merge ${prBranch}"
                   }
                   /*if(json.items[0].labels.isEmpty()){
                     echo "Labels is empty."
