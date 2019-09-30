@@ -8,7 +8,7 @@ def sendStatusToGit(status,description){
   /*def response = httpRequest consoleLogResponseBody: true,acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON', httpMode: "POST", requestBody: "{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\"}",url: "https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
   echo "${response}.getContent()"
   return response.geStatus() */
-  sh "curl -H 'Content-Type:application/json' -X POST -d '{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\",\"target_url\":\"${BUILD_URL}\"}' https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
+  sh "curl -H 'Content-Type:application/json' -X POST -d '{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\",\"target_url\":\"${BUILD_URL}\"}' https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
 }
 
 pipeline{
@@ -116,6 +116,7 @@ pipeline{
                 }               
                 catch(Exception e){
                   //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
+                  sendStatusToGit('failure','The build is failed!')
                   echo "Setup block failed with :"
                   throw e
                 }
@@ -124,7 +125,7 @@ pipeline{
 						post{
 							success{
                 //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is successfull!",state:"SUCCESS")
-                //sendStatusToGit('success','The build is successful!')
+                sendStatusToGit('success','The build is successful!')
                 /*script{
                   sendStatusToGit('success','The build is successful!')
                   //echo "Response from the github for the status is ${response}"
@@ -137,6 +138,7 @@ pipeline{
                   sendStatusToGit('failure','The build is failed!')
                   //echo "Response from the github for the status is ${response}"
                 }*/
+                sendStatusToGit('failure','The build is failed!')
                 echo "FAILURE: test build."
 
 							}
