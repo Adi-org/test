@@ -132,6 +132,7 @@ pipeline{
                 }*/
                 echo "SUCCESS: test build"
 							}
+              
 							failure{
                 //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
                 /*script{
