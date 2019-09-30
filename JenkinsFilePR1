@@ -84,6 +84,8 @@ pipeline{
                         def branchDetailsJson = readJSON text:branchDetails
                         def prBranch = branchDetailsJson[0]['name']
                         echo "Here3 ${prBranch}"
+                        sh "git checkout ${prBranch}"
+                        sh "git checkout ${BRANCH}"
                         sh "git merge ${prBranch}"
                     }
                     
