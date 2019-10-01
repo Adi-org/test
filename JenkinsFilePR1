@@ -53,7 +53,7 @@ pipeline{
                                     def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
                                     username = "${c.username}"
                                     password = "${c.password}"
-                                    //echo "${adi}"
+                                    echo "psssword"
                                   }
                                   catch(Exception e){
                                       //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
@@ -155,7 +155,7 @@ pipeline{
                   sendStatusToGit('failure','The build is failed!')
                   //echo "Response from the github for the status is ${response}"
                 }*/
-                sendStatusToGit('failure','The build is failed!')
+                //sendStatusToGit('failure','The build is failed!')
                 echo "FAILURE: test build."
 
 							}
