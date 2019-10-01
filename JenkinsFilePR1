@@ -66,12 +66,12 @@ pipeline{
                   def type = json.getClass()*/
                   //def list = sh (script : "ls -l",returnStdout: true).trim()
                   //sh "git clone https://${password}@github.com/Adi-org/test.git"
+                  buildFlag = false
                   if(!commitPRDetailsJson['items'].isEmpty()){
                       cleanUp()
                       sh "git clone https://${password}@github.com/Adi-org/test.git"
                       //"ls -l".execute()
                       //def clone =  sh (script:"git clone https://${password}@github.com/Adi-org/test.git",returnStdout: true)
-                      buildFlag = false
                       dir("test"){
                           def branchDetails = sh (script : "curl -H 'Content-Type:application/json' -H 'Accept:application/vnd.github.groot-preview+json' -X GET  https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/commits/${GIT_COMMIT}/branches-where-head",returnStdout: true).trim()
                           def branchDetailsJson = readJSON text:branchDetails
