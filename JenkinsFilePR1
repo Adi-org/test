@@ -41,11 +41,8 @@ pipeline{
                       com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
                       jenkins.model.Jenkins.instance
                       )
-                      echo "11111"
                       def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
-                      echo "22222"
                       password = "${c.password}"
-                      echo "33333"
                     }
                     catch(Exception e){
 						            sendStatusToGit('failure','The build is failed!')
@@ -63,29 +60,22 @@ pipeline{
                   // get PR details 
                   def commitPRDetails = sh (script : "curl -H 'Content-Type:application/json' -X GET  https://${password}@api.github.com/search/issues?q=sha:${GIT_COMMIT}",returnStdout: true).trim()
                   def commitPRDetailsJson = readJSON text:commitPRDetails
-                  echo " Itemss  ${commitPRDetailsJson['items']}"
                   /*def parser = new JsonSlurper()
                   def json = parser.parseText(commitPRDetails)
                   //def json = JsonOutput.toJson(commitPRDetails)
                   def type = json.getClass()*/
                   //def list = sh (script : "ls -l",returnStdout: true).trim()
                   //sh "git clone https://${password}@github.com/Adi-org/test.git"
-                  echo "heree  ..."
                   if(!commitPRDetailsJson['items'].isEmpty()){
                       cleanUp()
                       sh "git clone https://${password}@github.com/Adi-org/test.git"
-                      echo "Here0 ${password}"
                       //"ls -l".execute()
                       //def clone =  sh (script:"git clone https://${password}@github.com/Adi-org/test.git",returnStdout: true)
-                      echo "Here01"
                       buildFlag = false
                       dir("test"){
-                          echo "Here1"
-                          echo "Here2"
                           def branchDetails = sh (script : "curl -H 'Content-Type:application/json' -H 'Accept:application/vnd.github.groot-preview+json' -X GET  https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/commits/${GIT_COMMIT}/branches-where-head",returnStdout: true).trim()
                           def branchDetailsJson = readJSON text:branchDetails
                           def prBranch = branchDetailsJson[0]['name']
-                          echo "Here3 ${prBranch}"
                           sh "git checkout ${prBranch}"
                           sh "git checkout ${BRANCH}"
                           sh 'git config --global user.email "adithya.bhat@nutanix.com"'
