@@ -127,9 +127,9 @@ pipeline{
 						post{
 							success{
                 script{
-                    if (buildflag){
-                    sendStatusToGit('success','The build is successful!')
-                    echo "SUCCESS: test build"
+                    if (buildFlag){
+                        sendStatusToGit('success','The build is successful!')
+                        echo "SUCCESS: test build"
                     }
                     else{
                         echo "SUCCESS: test build is not done since there's no PR raised."
