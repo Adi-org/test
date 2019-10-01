@@ -11,18 +11,6 @@ def sendStatusToGit(status,description){
   sh "curl -H 'Content-Type:application/json' -X POST -d '{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\",\"target_url\":\"${BUILD_URL}\"}' https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
 }
 
-def getCredentials(){
-
-    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-    com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
-    jenkins.model.Jenkins.instance
-    )
-    def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
-    username = "${c.username}"
-    password = "${c.password}"
-    return password
-}
-
 def cleanUp(){
   // delete a dir if exists
   sh "rm -rf test"
@@ -44,6 +32,26 @@ pipeline{
       REPO_NAME = "test"
 		}
 		stages{
+
+        	stage("get git credentials"){
+            steps{
+                script{
+                    try{
+                      def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                      com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
+                      jenkins.model.Jenkins.instance
+                      )
+                      def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
+                      password = "${c.password}"
+                    }
+                    catch(Exception e){
+						            sendStatusToGit('failure','The build is failed!')
+                        echo "Get Credentials block failed with :"
+                        throw e
+                    }
+                }
+            }
+        }
        
   			stage("Setup"){
 						steps{
@@ -63,11 +71,11 @@ pipeline{
                   if(!commitPRDetailsJson['items'].isEmpty()){
                       try{
                           cleanUp()
-                          password = getCredentials()
                       }
                       catch(Exception e){
+                            sendStatusToGit('failure','The build is failed!')
                             //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
-                            echo "Get Credentials block failed with :"
+                            echo "Cleanup block failed with :"
                             throw e
                       }
                       sh "git clone https://${password}@github.com/Adi-org/test.git"
