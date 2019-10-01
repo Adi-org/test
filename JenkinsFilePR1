@@ -14,12 +14,18 @@ def sendStatusToGit(status,description){
 def cleanUp(){
   stages{
     stage("rm existing dir"){
+      steps{
         // delete a dir if exists
         sh "rm -rf test"
+      }
+        
     }
     stage("kill the running process"){
+      steps{
         // kill the process if running
         sh "sudo pkill -f 'node server.js'"
+      }
+        
     }
   }
 }
