@@ -122,7 +122,7 @@ pipeline{
                 }               
                 catch(Exception e){
                   //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
-                  sendStatusToGit('failure','The build is failed!')
+                  //sendStatusToGit('failure','The build is failed!')
                   echo "Setup block failed with :"
                   throw e
                 }
