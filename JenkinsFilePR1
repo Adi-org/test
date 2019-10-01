@@ -2,7 +2,7 @@
 import hudson.tasks.test.AbstractTestResultAction
 import hudson.model.*
 //import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
+//import groovy.json.JsonSlurper
 
 def sendStatusToGit(status,description){
   /*def response = httpRequest consoleLogResponseBody: true,acceptType: 'APPLICATION_JSON',contentType: 'APPLICATION_JSON', httpMode: "POST", requestBody: "{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\"}",url: "https://${username}:${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
@@ -25,34 +25,34 @@ pipeline{
       REPO_NAME = "test"
 		}
 		stages{
-      stage("get git credentials"){
-        steps{
-           script{
-             try{
-               def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-               com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
-               jenkins.model.Jenkins.instance
-               )
-               def c = creds.findResult { it.id == 'concord-service-boat' ? it : null }
-               username = "${c.username}"
-               password = "${c.password}"
-               //echo "${adi}"
-             }
-             catch(Exception e){
-                //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
-                echo "Get Credentials block failed with :"
-                throw e
-             }
-           }
-        }
+        stage("get git credentials"){
+            steps{
+                script{
+                    try{
+                      def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                      com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
+                      jenkins.model.Jenkins.instance
+                      )
+                      def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
+                      username = "${c.username}"
+                      password = "${c.password}"
+                      //echo "${adi}"
+                    }
+                    catch(Exception e){
+                        //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
+                        echo "Get Credentials block failed with :"
+                        throw e
+                    }
+                }
+            }
         }
         stage("Cleanup"){
-          steps{
-            script{
+            steps{
+                script{
                 // delete a dir if exists
-                sh "rm -rf test"
+                    sh "rm -rf test"
+                }
             }
-          }
           
         }
   			stage("Setup"){
@@ -88,6 +88,7 @@ pipeline{
                         sh 'git config --global user.email "adithya.bhat@nutanix.com"'
                         sh 'git config --global user.name "adithya-bhat"'
                         sh "git merge ${prBranch}"
+                        sh "node server.js &"
                     }
                     
                   }
@@ -132,7 +133,7 @@ pipeline{
                 }*/
                 echo "SUCCESS: test build"
 							}
-              
+
 							failure{
                 //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
                 /*script{
