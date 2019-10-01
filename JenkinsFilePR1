@@ -15,7 +15,7 @@ def cleanUp(){
   // delete a dir if exists
   sh "rm -rf test"
   // kill the process if running
-  sh "sudo pkill -f 'node server.js"
+  sh "sudo pkill -f 'node server.js'"
 }
 
 pipeline{
@@ -69,15 +69,7 @@ pipeline{
                   //sh "git clone https://${password}@github.com/Adi-org/test.git"
                   echo "heree  ..."
                   if(!commitPRDetailsJson['items'].isEmpty()){
-                      try{
-                          cleanUp()
-                      }
-                      catch(Exception e){
-                            sendStatusToGit('failure','The build is failed!')
-                            //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
-                            echo "Cleanup block failed with :"
-                            throw e
-                      }
+                      cleanUp()
                       sh "git clone https://${password}@github.com/Adi-org/test.git"
                       echo "Here0 ${password}"
                       //"ls -l".execute()
@@ -127,7 +119,7 @@ pipeline{
                 catch(Exception e){
                   //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
                   //sendStatusToGit('failure','The build is failed!')
-                  echo "Setup block failed with :"
+                  echo "Setup block failed."
                   throw e
                 }
 							}
