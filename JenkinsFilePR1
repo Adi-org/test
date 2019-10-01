@@ -11,6 +11,25 @@ def sendStatusToGit(status,description){
   sh "curl -H 'Content-Type:application/json' -X POST -d '{\"state\":\"${status}\",\"description\":\"${description}\",\"context\":\"CI/Jenkins\",\"target_url\":\"${BUILD_URL}\"}' https://${password}@api.github.com/repos/${ORG_NAME}/${REPO_NAME}/statuses/${GIT_COMMIT}"
 }
 
+def getCredentials(){
+
+    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+    com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
+    jenkins.model.Jenkins.instance
+    )
+    def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
+    username = "${c.username}"
+    password = "${c.password}"
+    return password
+}
+
+def cleanUp(){
+  // delete a dir if exists
+  sh "rm -rf test"
+  // kill the process if running
+  sh "sudo pkill -f 'node server.js"
+}
+
 pipeline{
 	  parameters {
 		  choice(name:'CONCORD_SLAVE', choices: ['concord-slave-1'], description: '')
@@ -42,37 +61,14 @@ pipeline{
                   //sh "git clone https://${password}@github.com/Adi-org/test.git"
                   echo "heree  ..."
                   if(!commitPRDetailsJson['items'].isEmpty()){
-                    stage("get git credentials"){
-                          steps{
-                              script{
-                                  try{
-                                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                                    com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
-                                    jenkins.model.Jenkins.instance
-                                    )
-                                    def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
-                                    username = "${c.username}"
-                                    password = "${c.password}"
-                                    echo "psssword"
-                                  }
-                                  catch(Exception e){
-                                      //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
-                                      echo "Get Credentials block failed with :"
-                                      throw e
-                                  }
-                              }
-                          }
+                      try{
+                          cleanUp()
+                          password = getCredentials()
                       }
-                      stage("Cleanup"){
-                          steps{
-                              script{
-                                  // delete a dir if exists
-                                  sh "rm -rf test"
-                                  // kill the process if running
-                                  sh "sudo pkill -f 'node server.js"
-                              }
-                          }
-                        
+                      catch(Exception e){
+                            //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is failed!",state:"FAILURE")
+                            echo "Get Credentials block failed with :"
+                            throw e
                       }
                       sh "git clone https://${password}@github.com/Adi-org/test.git"
                       echo "Here0 ${password}"
@@ -155,7 +151,7 @@ pipeline{
                   sendStatusToGit('failure','The build is failed!')
                   //echo "Response from the github for the status is ${response}"
                 }*/
-                //sendStatusToGit('failure','The build is failed!')
+                sendStatusToGit('failure','The build is failed!')
                 echo "FAILURE: test build."
 
 							}
