@@ -12,10 +12,16 @@ def sendStatusToGit(status,description){
 }
 
 def cleanUp(){
-  // delete a dir if exists
-  sh "rm -rf test"
-  // kill the process if running
-  sh "sudo pkill -f 'node server.js'"
+  stages{
+    stage("rm existing dir"){
+        // delete a dir if exists
+        sh "rm -rf test"
+    }
+    stage("kill the running process"){
+        // kill the process if running
+        sh "sudo pkill -f 'node server.js'"
+    }
+  }
 }
 
 pipeline{
