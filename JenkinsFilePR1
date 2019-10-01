@@ -130,13 +130,16 @@ pipeline{
 						}
 						post{
 							success{
-                if (buildflag){
+                script{
+                    if (buildflag){
                     sendStatusToGit('success','The build is successful!')
                     echo "SUCCESS: test build"
+                    }
+                    else{
+                        echo "SUCCESS: test build is not done since there's no PR raised."
+                    }
                 }
-                else{
-                    echo "SUCCESS: test build is not done since there's no PR raised."
-                }
+                
                 //setGitHubPullRequestStatus(context:"CI/Jenkins",message:"Build is successfull!",state:"SUCCESS")
                 
                 /*script{
