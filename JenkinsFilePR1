@@ -41,12 +41,15 @@ pipeline{
                       com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
                       jenkins.model.Jenkins.instance
                       )
+                      echo "11111"
                       def c = creds.findResult { it.id == 'concord-service-bot' ? it : null }
+                      echo "22222"
                       password = "${c.password}"
+                      echo "33333"
                     }
                     catch(Exception e){
 						            sendStatusToGit('failure','The build is failed!')
-                        echo "Get Credentials block failed with :"
+                        echo "Get Credentials block failed."
                         throw e
                     }
                 }
